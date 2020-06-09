@@ -17,6 +17,9 @@ let snake = [
 let dx = 10;
 let dy = 0;
 
+// Score
+let score = 0;
+
 // Get the canvas element
 var gameCanvas = document.getElementById("gameCanvas");
 
@@ -26,18 +29,23 @@ var ctx = gameCanvas.getContext("2d");
 
 // Begin the game
 main();
+// Create the first bit of food
+createFood();
+// Add listener for keyboard events (keydown)
+document.addEventListener("keydown", changeDirection);
 
 // Main function
 function main() {
     setTimeout(function onTick() {
         clearCanvas();
+        drawFood();
         advanceSnake();
         drawSnake();
         // Call main again
         main();
     }, 100)
 }
-document.addEventListener("keydown", changeDirection);
+
 
 // Function to draw the background
 function clearCanvas() {
@@ -69,7 +77,16 @@ function drawSnake() {
 function advanceSnake() {
     const head = {x: snake[0].x + dx, y: snake[0].y + dy};
     snake.unshift(head);
-    snake.pop();
+
+    const didEatFood = snake[0].x === foodX && snake[0].y === foodY;
+    if (didEatFood) {
+        score += 10;
+        document.getElementById("score").innerHTML = score;
+        
+        createFood();
+    } else {
+        snake.pop();
+    }
 }
 
 // Function to handle the user input
@@ -100,4 +117,28 @@ function changeDirection(event) {
         dx = 0;
         dy = 10;
     }
+}
+
+// Function to draw the food
+function drawFood() {
+    ctx.fillStyle = "red";
+    ctx.strokeStyle = "darkred";
+    ctx.fillRect(foodX, foodY, 10, 10);
+    ctx.strokeRect(foodX, foodY, 10, 10);
+}
+
+function randomTen(min, max) {
+    return Math.round((Math.random() * (max-min) + min) / 10) * 10;
+}
+
+function createFood() {
+    // Generate a random number the food x-coordinate
+    foodX = randomTen(0, gameCanvas.width - 10);
+    // Generate a random number for the food y-coordinate
+    foodY = randomTen(0, gameCanvas.height - 10);
+
+    // if the new food location is where the snake currently is, generate a new food location
+    snake.forEach(function isOnSnake(part) {
+      if (part.x == foodX && part.y == foodY) createFood();
+    });
 }
