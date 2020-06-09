@@ -37,16 +37,20 @@ document.addEventListener("keydown", changeDirection);
 // Main function
 function main() {
 
-    if (didGameEnd()) return;
+    if (didGameEnd()){
+        document.getElementById("score").innerHTML = "END GAME - SCORE: " + score;
+        return;
+    }
 
     setTimeout(function onTick() {
+        changingDirection = false;
         clearCanvas();
         drawFood();
         advanceSnake();
         drawSnake();
         // Call main again
         main();
-    }, 100)
+    }, 60)
 }
 
 
@@ -98,11 +102,17 @@ function changeDirection(event) {
     const RIGHT_KEY = 39;
     const UP_KEY = 38;
     const DOWN_KEY = 40;
+
+    if(changingDirection) return;
+
+    changingDirection = true;
+
     const keyPressed = event.keyCode;
     const goingUp = dy === -10;
     const goingDown = dy === 10;
     const goingRight = dx === 10;
     const goingLeft = dx === -10;
+
 
     if (keyPressed === LEFT_KEY && !goingRight) {
         dx = -10;
@@ -116,7 +126,7 @@ function changeDirection(event) {
         dx = 10;
         dy = 0;
     }
-    if (keyPressed === DOWN_KEY && !goingDown) {
+    if (keyPressed === DOWN_KEY && !goingUp) {
         dx = 0;
         dy = 10;
     }
