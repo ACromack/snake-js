@@ -36,6 +36,9 @@ document.addEventListener("keydown", changeDirection);
 
 // Main function
 function main() {
+
+    if (didGameEnd()) return;
+
     setTimeout(function onTick() {
         clearCanvas();
         drawFood();
@@ -141,4 +144,20 @@ function createFood() {
     snake.forEach(function isOnSnake(part) {
       if (part.x == foodX && part.y == foodY) createFood();
     });
+}
+
+function didGameEnd() {
+    for (let i = 4; i < snake.length; i++) {
+      const didCollide = snake[i].x === snake[0].x &&
+        snake[i].y === snake[0].y
+      if (didCollide) return true
+    }
+    const hitLeftWall = snake[0].x < 0;
+    const hitRightWall = snake[0].x > gameCanvas.width - 10;
+    const hitToptWall = snake[0].y < 0;
+    const hitBottomWall = snake[0].y > gameCanvas.height - 10;
+    return hitLeftWall || 
+           hitRightWall || 
+           hitToptWall ||
+           hitBottomWall
 }
