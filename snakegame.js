@@ -114,6 +114,10 @@ function changeDirection(event) {
     const goingLeft = dx === -10;
 
 
+    if (keyPressed === 82) {
+        resetGame();
+    }
+
     if (keyPressed === LEFT_KEY && !goingRight) {
         dx = -10;
         dy = 0;
@@ -170,4 +174,28 @@ function didGameEnd() {
            hitRightWall || 
            hitToptWall ||
            hitBottomWall
+}
+
+function resetGame() {
+    snake = [
+        {x: 150, y: 150},
+        {x: 140, y: 150},
+        {x: 130, y: 150},
+        {x: 120, y: 150},
+        {x: 110, y: 150},
+    ];
+
+    didCollide = false;
+    hitLeftWall = false;
+    hitRightWall = false; 
+    hitToptWall = false;
+    hitBottomWall = false;
+
+    dx = 10;
+    dy = 0;
+
+    score = 0;
+    document.getElementById("score").innerHTML = "SCORE: " + score;
+
+    main();
 }
